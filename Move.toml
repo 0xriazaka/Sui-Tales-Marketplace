@@ -1,0 +1,15 @@
+[package]
+name = "devhub"
+version = "0.0.1"
+edition = "2024.beta" 
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/devnet" }
+
+[addresses]
+kiosk = "0x0"
+tale = "0x1"
+
+[dev-dependencies]
+
+[dev-addresses]
