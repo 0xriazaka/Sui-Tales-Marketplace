@@ -18,10 +18,8 @@ module talestransferpolicy::talestransferpolicy {
     }
 
     public fun new_policy(pub: &Publisher, ctx: &mut TxContext) {
-        let (policy, policy_cap) = transfer_policy::new<TShirt>(pub, ctx);
+        let (policy, policy_cap) = transfer_policy::new<T>(pub, ctx);
         transfer::public_share_object(policy);
         transfer::public_transfer(policy_cap, sender(ctx));
-    }
-
-    
+    }   
 }
