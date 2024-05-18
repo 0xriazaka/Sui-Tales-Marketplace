@@ -46,7 +46,7 @@ module talesmarket::talesmarket {
         kiosk::lock(kiosk, cap, policy, tale);
     }
 
-    //withdraw tale profits
+    // withdraw tale profits
     public fun withdraw_profits(kiosk: &mut Kiosk, cap: &KioskOwnerCap, amount: Option<u64>, ctx: &mut TxContext): Coin<SUI> {
         kiosk::withdraw(kiosk, cap, amount, ctx)
     }

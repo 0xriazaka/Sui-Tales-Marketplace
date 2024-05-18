@@ -4,11 +4,13 @@ version = "0.0.1"
 edition = "2024.beta" 
 
 [dependencies]
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/devnet" }
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
 
 [addresses]
-talesmarket = "0x0"
 tale = "0x0"
+talesmarket = "0x0"
+talestransferpolicy = "0x0"
+talesrules = "0x0"
 
 [dev-dependencies]
 
