@@ -24,6 +24,13 @@ sui client call --function list_tale --module talesmarket --package $PACKAGE_ID 
 
 # buy a tale 
 sui client call --function purchase_tale --module talesmarket --package $PACKAGE_ID --args $KIOSK_ID $KIOSKOWNERCAP_ID $TALE_ID $PAYMENT_ID --type-args $TYPE_ARGS --gas-budget 10000000
+
+## transferpolicy
+# new policy
+sui client call --function new_policy --module talestransferpolicy --package $PACKAGE_ID --args $KIOSK_PUBLISHER --gas-budget 10000000
+
+# add a rule
+sui client call --function add_tale_rule --module talesrules --package $PACKAGE_ID --args $KIOSK_TRANSFER_POLICY $KIOSK_TRANSFER_POLICY_CAP $AMOUNT_BP --type-args $TYPE_ARGS --gas-budget 10000000
 ```
 
 ## Contributing
