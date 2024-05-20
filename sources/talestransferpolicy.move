@@ -12,4 +12,17 @@ module talestransferpolicy::talestransferpolicy {
         transfer::public_share_object(policy);
         transfer::public_transfer(policy_cap, sender(ctx));
     }
+
+    public entry fun transfer_ownership(
+        tale_id: ID,
+        new_owner: address,
+        ctx: &mut TxContext,
+    ) {
+        let sender = tx_context::sender(ctx);
+        let tale = borrow_global_mut<Tale>(tale_id);
+        
+        assert!(tale.owner == sender, 1, "Only the owner can transfer the tale");
+
+        tale.owner = new_owner;
+    }
 }
