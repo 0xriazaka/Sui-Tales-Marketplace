@@ -1,10 +1,10 @@
 module tale::tale {
-    use std::option:: {Self, Option};
-    use std::string:: {Self, String};
+    use std::option::{Self, Option};
+    use std::string::{Self, String};
     use sui::transfer;
-    use sui::object:: {Self, UID, ID};
-    use sui::tx_context:: {Self, TxContext};
-    use sui::coin:: {Self, Coin};
+    use sui::object::{Self, UID, ID};
+    use sui::tx_context::{Self, TxContext};
+    use sui::coin::{Self, Coin};
     use sui::sui::SUI;
     use sui::event;
 
