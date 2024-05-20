@@ -26,44 +26,32 @@ module talesmarket::talesmarket {
     }
 
     // place a tale
-    public fun place_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, tale: T, ctx: &mut TxContext) {
-        let sender = tx_context::sender(ctx);
-        assert!(verify_kiosk_ownership(kiosk, cap, sender), ERR_UNAUTHORIZED);
+    public fun place_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, tale: T) {
         kiosk::place(kiosk, cap, tale);
     }
 
     // unplace a tale
-    public fun unplace_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, item_id: object::ID, ctx: &mut TxContext): T {
-        let sender = tx_context::sender(ctx);
-        assert!(verify_kiosk_ownership(kiosk, cap, sender), ERR_UNAUTHORIZED);
+    public fun unplace_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, item_id: object::ID): T {
         kiosk::take<T>(kiosk, cap, item_id)
     }
 
     // list a tale
-    public fun list_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, skin_id: object::ID, price: u64, ctx: &mut TxContext) {
-        let sender = tx_context::sender(ctx);
-        assert!(verify_kiosk_ownership(kiosk, cap, sender), ERR_UNAUTHORIZED);
+    public fun list_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, skin_id: object::ID, price: u64) {
         kiosk::list<T>(kiosk, cap, skin_id, price);
     }
 
     // delist a tale
-    public fun delist_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, skin_id: object::ID, ctx: &mut TxContext) {
-        let sender = tx_context::sender(ctx);
-        assert!(verify_kiosk_ownership(kiosk, cap, sender), ERR_UNAUTHORIZED);
+    public fun delist_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, skin_id: object::ID) {
         kiosk::delist<T>(kiosk, cap, skin_id);
     }
 
     // lock a tale
-    public fun lock_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, policy: &TransferPolicy<T>, tale: T, ctx: &mut TxContext) {
-        let sender = tx_context::sender(ctx);
-        assert!(verify_kiosk_ownership(kiosk, cap, sender), ERR_UNAUTHORIZED);
+    public fun lock_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, policy: &TransferPolicy<T>, tale: T) {
         kiosk::lock(kiosk, cap, policy, tale);
     }
 
     // withdraw kiosk profits
-    public fun withdraw_profits(kiosk: &mut Kiosk, cap: &KioskOwnerCap, amount: Option<u64>, ctx: &mut TxContext): Coin<SUI> {
-        let sender = tx_context::sender(ctx);
-        assert!(verify_kiosk_ownership(kiosk, cap, sender), ERR_UNAUTHORIZED);
+    public fun withdraw_profits(kiosk: &mut Kiosk, cap: &KioskOwnerCap, amount: Option<u64>): Coin<SUI> {
         kiosk::withdraw(kiosk, cap, amount, ctx)
     }
 
