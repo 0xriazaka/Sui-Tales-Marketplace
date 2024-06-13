@@ -25,10 +25,10 @@ module tale::tale {
 
     // mint tale
     public entry fun mint_tale (
-        author: vector<u8>,
-        title: vector<u8>,
-        category: vector<u8>,
-        story: vector<u8>,   
+        author: String,
+        title: String,
+        category: String,
+        story: String,   
         ctx: &mut TxContext,
     ) {
         let sender = tx_context::sender(ctx);
