@@ -13,7 +13,7 @@ module tale::market {
     use sui::package::{Self, Publisher};
 
     // Error codes
-    const ENoPicture: u64 = 0;
+    const ENoTale: u64 = 0;
     const ENotOwner: u64 = 1;
     const EInvalidAmount: u64 = 2;
 
