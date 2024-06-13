@@ -1,64 +1,108 @@
-
-module talesmarket::talesmarket {
-    use sui::kiosk::{Self, Kiosk, KioskOwnerCap};
-    use sui::transfer_policy::{Self, TransferPolicy, TransferRequest};
-    use sui::balance::{Self, Balance};
+module tale::market {
+    use std::string::{String};
+  
     use sui::coin::{Self, Coin};
+    use sui::object::{Self, ID, UID};
+    use sui::table::{Table, Self};
+    use sui::transfer;
     use sui::tx_context::{Self, TxContext};
-    use sui::sui::SUI;
-    use sui::object::{Self, UID, ID};
+    use sui::sui::{SUI};
+    use sui::balance::{Self, Balance};
+    use sui::kiosk::{Self, Kiosk, KioskOwnerCap};
+    use sui::transfer_policy::{Self as tp};
+    use sui::package::{Self, Publisher};
 
-    // errors
-    const ERR_UNAUTHORIZED: u64 = 1;
+    // Error codes
+    const ENoPicture: u64 = 0;
+    const ENotOwner: u64 = 1;
+    const EInvalidAmount: u64 = 2;
 
-    // seller functions
-    // create new marketplace
-    entry fun create_tale_marketplace(ctx: &mut TxContext) {
-        let (kiosk, cap) = kiosk::new(ctx);
-        let sender = tx_context::sender(ctx);
+    /// Publisher capability object
+    public struct TalePublisher has key { id: UID, publisher: Publisher }
+
+     // one time witness 
+    public struct MARKET has drop {}
+
+    // Only owner of this module can access it.
+    public struct AdminCap has key {
+        id: UID,
+    }
+
+    public struct Tale has key, store {
+        id: UID,
+        owner: address,
+        author: String,
+        title: String,
+        category: String,
+        story: String,
+    }
+
+    // events
+    public struct TaleCreated has copy, drop {
+        tale_id: ID,
+        author: address,
+    }
+
+    // mint tale
+    public fun mint_tale (
+        author: String,
+        title: String,
+        category: String,
+        story: String,   
+        ctx: &mut TxContext,
+    ) : Tale {
+        let tale = Tale {
+            id: object::new(ctx),
+            owner: ctx.sender(),
+            author: author,
+            title: title,
+            category: category,
+            story: story,
+        };
+        tale 
+    }
+
+    // =================== Initializer ===================
+    fun init(otw: MARKET, ctx: &mut TxContext) {
+        // define the publisher
+        let publisher_ = package::claim<MARKET>(otw, ctx);
+        // wrap the publisher and share.
+        transfer::share_object(TalePublisher {
+            id: object::new(ctx),
+            publisher: publisher_
+        });
+        // transfer the admincap
+        transfer::transfer(AdminCap{id: object::new(ctx)}, tx_context::sender(ctx));
+    }
+
+    /// Users can create new kiosk for marketplace 
+    public fun new(ctx: &mut TxContext) : KioskOwnerCap {
+        let(kiosk, kiosk_cap) = kiosk::new(ctx);
+        // share the kiosk
         transfer::public_share_object(kiosk);
-        transfer::public_transfer(cap, sender);
+        kiosk_cap
+    }
+    // create any transferpolicy for rules 
+    public fun new_policy(publish: &TalePublisher, ctx: &mut TxContext ) {
+        // set the publisher
+        let publisher = get_publisher(publish);
+        // create an transfer_policy and tp_cap
+        let (transfer_policy, tp_cap) = tp::new<Tale>(publisher, ctx);
+        // transfer the objects 
+        transfer::public_transfer(tp_cap, tx_context::sender(ctx));
+        transfer::public_share_object(transfer_policy);
     }
 
-    // Verify ownership of the kiosk
-    fun verify_kiosk_ownership(kiosk: &Kiosk, cap: &KioskOwnerCap, sender: address): bool {
-        true
-    }
+    // =================== Helper Functions ===================
 
-    // place a tale
-    public fun place_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, tale: T) {
-        kiosk::place(kiosk, cap, tale);
-    }
+    // return the publisher
+    fun get_publisher(shared: &TalePublisher) : &Publisher {
+        &shared.publisher
+     }
 
-    // unplace a tale
-    public fun unplace_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, item_id: object::ID): T {
-        kiosk::take<T>(kiosk, cap, item_id)
-    }
-
-    // list a tale
-    public fun list_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, skin_id: object::ID, price: u64) {
-        kiosk::list<T>(kiosk, cap, skin_id, price);
-    }
-
-    // delist a tale
-    public fun delist_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, skin_id: object::ID) {
-        kiosk::delist<T>(kiosk, cap, skin_id);
-    }
-
-    // lock a tale
-    public fun lock_tale<T: key + store>(kiosk: &mut Kiosk, cap: &KioskOwnerCap, policy: &TransferPolicy<T>, tale: T) {
-        kiosk::lock(kiosk, cap, policy, tale);
-    }
-
-    // withdraw kiosk profits
-    public fun withdraw_profits(kiosk: &mut Kiosk, cap: &KioskOwnerCap, amount: Option<u64>, ctx: &mut TxContext): Coin<SUI> {
-        kiosk::withdraw(kiosk, cap, amount, ctx)
-    }
-
-    // buyer functions
-    // purchase a tale
-    public fun purchase_tale<T: key + store>(kiosk: &mut Kiosk, item_id: object::ID, payment: Coin<SUI>): (T, sui::transfer_policy::TransferRequest<T>) {
-        kiosk::purchase<T>(kiosk, item_id, payment)
+    #[test_only]
+    // call the init function
+    public fun test_init(ctx: &mut TxContext) {
+        init(MARKET {}, ctx);
     }
 }
-
