@@ -24,28 +24,27 @@ module tale::tale {
     }
 
     // mint tale
-    public entry fun mint_tale (
+    public fun mint_tale (
         author: String,
         title: String,
         category: String,
         story: String,   
         ctx: &mut TxContext,
-    ) {
-        let sender = tx_context::sender(ctx);
+    ) : Tale {
         let tale = Tale {
             id: object::new(ctx),
-            owner: sender,
-            author: string::utf8(author),
-            title: string::utf8(title),
-            category: string::utf8(category),
-            story: string::utf8(story),
+            owner: ctx.sender(),
+            author: author,
+            title: title,
+            category: category,
+            story: story,
         };
 
         event::emit(TaleCreated {
             tale_id: object::id(&tale),
-            author: sender,
+            author: ctx.sender(),
         });
-
-        transfer::public_transfer(tale, sender);
+        tale
+       
     }
 }
