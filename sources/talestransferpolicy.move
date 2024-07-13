@@ -1,9 +1,8 @@
 
 module talestransferpolicy::talestransferpolicy {
-    use sui::tx_context::{TxContext, sender};
-    use sui::transfer_policy::{Self, TransferRequest, TransferPolicy, TransferPolicyCap};
-    use sui::package::{Self, Publisher};
-    use sui::transfer::{Self};
+    use sui::tx_context::sender;
+    use sui::transfer_policy;
+    use sui::package::Publisher;
 
     // create transferpolicy
     #[allow(lint(share_owned, self_transfer))]

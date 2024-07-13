@@ -1,15 +1,9 @@
 
 module talesmarket::talesmarket {
     use sui::kiosk::{Self, Kiosk, KioskOwnerCap};
-    use sui::transfer_policy::{Self, TransferPolicy, TransferRequest};
-    use sui::balance::{Self, Balance};
-    use sui::coin::{Self, Coin};
-    use sui::tx_context::{Self, TxContext};
+    use sui::transfer_policy::TransferPolicy;
+    use sui::coin::Coin;
     use sui::sui::SUI;
-    use sui::object::{Self, UID, ID};
-
-    // errors
-    const ERR_UNAUTHORIZED: u64 = 1;
 
     // seller functions
     // create new marketplace
@@ -21,7 +15,7 @@ module talesmarket::talesmarket {
     }
 
     // Verify ownership of the kiosk
-    fun verify_kiosk_ownership(kiosk: &Kiosk, cap: &KioskOwnerCap, sender: address): bool {
+    fun verify_kiosk_ownership(_kiosk: &Kiosk, _cap: &KioskOwnerCap, _sender: address): bool {
         true
     }
 
